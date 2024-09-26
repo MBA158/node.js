@@ -1,71 +1,71 @@
-const users = [
-    { id: 1, name: 'john' },
-    { id: 2, name: 'jon' },
-    { id: 3, name: 'jhon' }
-];
+const User = require('../models/user');
 
-const getUsers = (req,res)=>{
-    return res.json(users);
+const users = [
+    { id: 1, name: 'John' },
+    { id: 2, name: 'Jenny' },
+    { id: 3, name: 'Jennifer' },
+
+]
+
+
+const getUser = async (req, res) => {
+    try {
+        const users = await User.find().select('-password');
+        
+        return res.json(users);
+    } catch (error) {
+        return res.status(500).json({ error: error.message });
+    }
 };
+
+
 
 const addUser = (req, res) => {
-    const { name } = req.body;
-    if (!name) {
-        return res.status(400).json({ error: 'name is required' });
-    }
-    const nameExists = users.find((user) => user.name === name);
-    if (nameExists) {
-        return res.status(400).json({ error: 'name already exists' });
-    }
-    const user1 = {
-        id: users.length + 1,
-        name,
-    };
-    users.push(user1);
-    return res.status(201).json(users);
+    const { name, email, password } = req.body;
+
+    const newUser = new User({name, email, password});
+    newUser.save();
+
+    return res.status(201).json(newUser);
 };
 
+
 const deleteUser = (req, res) => {
-    const { name } = req.body;
-    if (!name) {
-        return res.status(400).json({ error: 'name is required' });
-    }
-    const index = users.findIndex((user) => user.name === name);
+    const { id } = req.params;
+
+    const index = users.findIndex((user) => user.id === +id);
+
     if (index === -1) {
-        return res.status(404).json({ error: 'name does not exist' });
+        return res.status(404).json({ error: 'user does not exist' });
     }
     users.splice(index, 1);
     return res.status(200).json(users);
-};
+}
 
-const updateUser =(req, res) => {
+
+const updateUser = (req, res) => {
+    const { id } = req.params;
     const { name } = req.body;
-    const { id } = req.query;
-    if (!id) {
-        return res.status(400).json({ error: 'id doesnt exist' });
+
+    const user = users.find((user) => user.id === +id); //'+' makes casting from string to number
+
+    if (!user) {
+        return res.status(404).json({ error: 'user not found' });
     }
-    if (!name) {
-        return res.status(400).json({ error: 'name is required' });
+
+    const userExist = users.find((user) => user.name === name)
+    if (userExist) {
+        return res.status(400).json({ error: 'Name already exists' })
     }
-    const nameExists = users.find((user) => user.name === name && user.id);
-    if (nameExists) {
-        return res.status(400).json({ error: 'name already exists' });
-    }
-    newid = Number(id);
-    if (isNaN(newid)) {
-        return res.status(400).json({ error: 'id must be a number' });
-    }
-    const index = users.findIndex((user) => user.id === newid);
-    if (index === -1) {
-        return res.status(400).json({ error: 'user not found' });
-    }
-    users[index].name = name;
+
+    user.name = name;
     return res.status(200).json(users);
-};
+}
+
 
 module.exports = {
-    getUsers,
+    getUser,
     addUser,
     deleteUser,
-    updateUser
+    updateUser,
 }
