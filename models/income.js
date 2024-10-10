@@ -17,7 +17,7 @@ const incomeScheme = new mongoose.Schema({
     tag :{
         type: String,
         required: true,
-        enum: ['Salary','Bonus','Gift','Other'],
+        enum: ['salary','bonus','gift','other'],
     },
     currency :{
         type: String,
