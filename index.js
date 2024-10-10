@@ -7,7 +7,6 @@ app.use(express.json());
 
 app.use(userRouter);
 
-console.log(process.env.DB_URL)
 
 app.listen(3000, () => {
   connectDB();
