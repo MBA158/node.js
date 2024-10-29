@@ -65,8 +65,8 @@ const signIn = async(req,res)=>{
         };
         const token = jwt.sign(
             {
-              id: newUser._id,
-              username: newUser.username,
+              id: userExists._id,
+              username: userExists.username,
             },
             process.env.JWT_SECRET,
             {

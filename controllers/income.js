@@ -43,7 +43,6 @@ const getIncomes = async(req,res)=>{
     try {
         const userId = userIdValidation.parse(req.params.userId);
         const userExists = await User.findById(userId);
-
         if (!userExists) {
             return res.status(404).json({ message: 'User not found' });
         }
