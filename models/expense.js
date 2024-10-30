@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const expanseScheme = new mongoose.Schema({
+const expenseScheme = new mongoose.Schema({
     title :{
         type: String,
         required: true,
@@ -17,7 +17,7 @@ const expanseScheme = new mongoose.Schema({
     tag :{
         type: String,
         required: true,
-        enum: ['Food','Rent','Transport','Clothing','Entertainment', 'health','education','Other'],
+        enum: ['Food','Rent','Transport','Clothing','Entertainment', 'Health','Education','Other'],
     },
     currency :{
         type: String,
@@ -28,4 +28,4 @@ const expanseScheme = new mongoose.Schema({
 },
     { timestamps: true }
 );
-module.exports = mongoose.model('Expanse', expanseScheme);
+module.exports = mongoose.model('Expense', expenseScheme);
