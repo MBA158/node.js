@@ -39,16 +39,16 @@ const addExpense = async (req, res) => {
     }
 };
 
-const getExpenses = async(req,res)=>{
+const getExpenses = async (req, res) => {
     try {
         const userId = userIdValidation.parse(req.params.userId);
         const userExists = await User.findById(userId);
         if (!userExists) {
             return res.status(404).json({ message: 'User not found' });
         }
-        const expenses = await Expense.find({_id:{$in:userExists.expanses}});
+        const expenses = await Expense.find({ _id: { $in: userExists.expanses } });
         return res.status(200).json(expenses);
-    }catch (error) {
+    } catch (error) {
         console.log(error)
         if (error instanceof z.ZodError) {
             return res.status(400).json({ message: error.errors[0].message });
@@ -59,8 +59,8 @@ const getExpenses = async(req,res)=>{
 const updateExpense = async (req, res) => {
     try {
         const userId = userIdValidation.parse(req.params.userId);
-        const expenseId = req.params.expenseId; 
-        
+        const expenseId = userIdValidation.parse(req.params.expenseId);
+
         const { title, description, amount, tag, currency } = expenseSchema.parse(req.body);
 
         const userExists = await User.findById(userId);
@@ -73,7 +73,7 @@ const updateExpense = async (req, res) => {
             return res.status(404).json({ message: 'Expense not found' });
         }
 
-        
+
         expense.title = title;
         expense.description = description;
         expense.amount = amount;
@@ -96,8 +96,8 @@ const updateExpense = async (req, res) => {
 const deleteExpense = async (req, res) => {
     try {
         const userId = userIdValidation.parse(req.params.userId);
-        const expenseId = req.params.expenseId; 
-        
+        const expenseId = req.params.expenseId;
+
         const userExists = await User.findById(userId);
         if (!userExists) {
             return res.status(404).json({ message: 'User not found' });
@@ -110,7 +110,7 @@ const deleteExpense = async (req, res) => {
 
         userExists.expanses.splice(expenseIndex, 1);
         await userExists.save();
-        
+
         await Expense.findByIdAndDelete(expenseId);
 
         return res.status(200).json({ message: 'Expense deleted successfully' });
